@@ -2,8 +2,30 @@ html, body {
     margin: 0;
     overflow: hidden;
     background: #111;
+    color: white;
+    font-family: sans-serif;
+}
+
+#menu {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+input {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
 }
 
 canvas {
-    display: block;
+    display: none;
 }
