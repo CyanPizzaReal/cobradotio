@@ -15,6 +15,13 @@ let playing = false;
 window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
 window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
+function carbonMenu() {
+    if (!state.players[socket.id]?.admin) return;
+
+    const speed = prompt("set speed");
+    socket.emit("admin", { speed: parseFloat(speed) });
+}
+
 function startGame() {
     const name = document.getElementById("name").value.slice(0, 10);
 
