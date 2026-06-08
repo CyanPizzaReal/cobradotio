@@ -1,35 +1,19 @@
-const socket = io();
-const canvas = document.getElementById("c");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-const keys = {};
-let state = { players: {}, food: [] };
-
-window.addEventListener("keydown", e => keys[e.key.toLowerCase()] = true);
-window.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
-
-function sendInput() {
-    let dx = 0, dy = 0;
-
-    if (keys.w) dy -= 5;
-    if (keys.s) dy += 5;
-    if (keys.a) dx -= 5;
-    if (keys.d) dx += 5;
-
-    socket.emit("input", { dx, dy });
-}
-
-setInterval(sendInput, 50);
-
-socket.on("state", (s) => {
-    state = s;
-});
-
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const me = state.players[socket.id];
+    if (!me) {
+        requestAnimationFrame(draw);
+        return;
+    }
+
+    ctx.save();
+
+    // camera follows player (THIS is the fix)
+    ctx.translate(
+        canvas.width / 2 - me.x,
+        canvas.height / 2 - me.y
+    );
 
     // food
     ctx.fillStyle = "yellow";
@@ -46,11 +30,11 @@ function draw() {
         ctx.fillStyle = id === socket.id ? "lime" : "red";
 
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size || 10, 0, Math.PI * 2);
         ctx.fill();
     }
 
+    ctx.restore();
+
     requestAnimationFrame(draw);
 }
-
-draw();
