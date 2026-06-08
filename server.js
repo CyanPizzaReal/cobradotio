@@ -11,7 +11,6 @@ app.use(express.static("public"));
 const players = {};
 const food = [];
 
-// spawn food
 for (let i = 0; i < 50; i++) {
     food.push({
         x: Math.random() * 2000,
@@ -20,20 +19,24 @@ for (let i = 0; i < 50; i++) {
 }
 
 io.on("connection", (socket) => {
-    players[socket.id] = {
-        x: Math.random() * 2000,
-        y: Math.random() * 2000,
-        size: 10,
-        speed: 4,
-        score: 0
-    };
+
+    socket.on("join", (data) => {
+        players[socket.id] = {
+            name: (data.name || "anon").slice(0, 10),
+            x: Math.random() * 2000,
+            y: Math.random() * 2000,
+            angle: 0,
+            size: 10,
+            speed: 3,
+            score: 0
+        };
+    });
 
     socket.on("input", (data) => {
         const p = players[socket.id];
         if (!p) return;
 
-        p.dx = data.dx;
-        p.dy = data.dy;
+        p.angle = data.angle;
     });
 
     socket.on("disconnect", () => {
@@ -46,12 +49,12 @@ function distance(a, b) {
 }
 
 setInterval(() => {
-    // move players
     for (const id in players) {
         const p = players[id];
 
-        p.x += p.dx || 0;
-        p.y += p.dy || 0;
+        // ALWAYS MOVE FORWARD
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
 
         // food collision
         for (let i = 0; i < food.length; i++) {
@@ -59,7 +62,7 @@ setInterval(() => {
                 food[i].x = Math.random() * 2000;
                 food[i].y = Math.random() * 2000;
 
-                p.size += 1;
+                p.size += 0.5;
                 p.score += 1;
             }
         }
