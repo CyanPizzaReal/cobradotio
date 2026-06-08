@@ -1,12 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>COBRA.IO - MADE BY CARBONDEV</title>
+    <title>COBRA.IO | MADE BY CARBONDEV</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="c"></canvas>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="game.js"></script>
+
+<div id="menu">
+    <h1>snake io</h1>
+
+    <input id="name" maxlength="10" placeholder="username (max 10)" />
+
+    <button onclick="startGame()">play</button>
+</div>
+
+<canvas id="c"></canvas>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="game.js"></script>
+
 </body>
 </html>
